@@ -22,5 +22,6 @@ function add( a, b){
 
 1. Learn react
 2. Learn ui framework/library
+3. Learn different packages
 3. Learn react router
 4. Learn a database
