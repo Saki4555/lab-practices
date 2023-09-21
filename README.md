@@ -16,10 +16,10 @@ function add( a, b){
 
 [lin]: https://www.google.com
 
--Learn HTML
--Learn CSS
--Learn JavaScript
+- Learn HTML
+- Learn CSS
+- Learn JavaScript
 
-1.Learn react
-2.Learn react router
-3.Learn a database
+1. Learn react
+2. Learn react router
+3. Learn a database
