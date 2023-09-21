@@ -21,5 +21,6 @@ function add( a, b){
 - Learn JavaScript
 
 1. Learn react
-2. Learn react router
-3. Learn a database
+2. Learn ui
+3. Learn react router
+4. Learn a database
