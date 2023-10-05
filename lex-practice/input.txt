@@ -1,0 +1,6 @@
+19 3.1 4E9 -11
+70 80 0
+
+cnt cnt_ cnt_one _size
+
+if else int main double switch
