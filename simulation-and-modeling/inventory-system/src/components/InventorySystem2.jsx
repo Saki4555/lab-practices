@@ -1,48 +1,44 @@
-import  {useState, useEffect} from 'react';
+import { useState, useEffect } from 'react';
 
-function InventorySystem2() {
+export function InventorySimulator() {
 
-  const [inventory, setInventory] = useState({
-    apples: 10,
-    bananas: 5,  
-    oranges: 15
-  });
+  const [inventory, setInventory] = useState(5);
+  const [day, setDay] = useState(1);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      simulateInventoryChanges();
-    }, 1000);
+      if (day > 30) {
+        clearInterval(interval);
+        return;
+      }
+
+      const demand = Math.floor(Math.random() * 4) + 1; 
+      setInventory(prev => prev - demand);
+
+      if (inventory < 3) {
+        setTimeout(() => {
+          setInventory(prev => prev + 10);
+        }, 15 * 1000);
+      }
+
+      if (inventory < 0) {
+        setTimeout(() => {
+          setInventory(prev => prev + 10);
+        }, 5 * 1000); 
+      }
+
+      setDay(day + 1);
+    }, 5000);
+
     return () => clearInterval(interval);
-  }, []);
 
-  const simulateInventoryChanges = () => {
-    const newInventory = {...inventory};
-
-    // Simulate random sales
-    Object.keys(newInventory).forEach(item => {
-      newInventory[item] = Math.max(0, newInventory[item] - Math.floor(Math.random() * 5)); 
-    });
-
-    // Simulate random restocking
-    Object.keys(newInventory).forEach(item => {
-      newInventory[item] += Math.floor(Math.random() * 5);
-    });
-
-    setInventory(newInventory);
-  }
-
-  // Display inventory
-  const renderedInventory = Object.entries(inventory).map(([item, quantity]) => (
-    <div key={item}>{item}: {quantity}</div>
-  ));
+  }, [day, inventory]);
 
   return (
     <div>
-      <h1>Inventory Simulator</h1>
-      {renderedInventory}
+      <h1>Inventory: {inventory}</h1>
+      <h2>Day: {day}</h2>
     </div>
   );
 
 }
-
-export default InventorySystem2;

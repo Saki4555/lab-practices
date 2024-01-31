@@ -1,66 +1,114 @@
 import { useState, useEffect } from "react";
-import { generateRandomDemand } from "../utils/inventoryHandler";
+import {
+  generateRandomDemand,
+  generateRandomLeadTime,
+} from "../utils/inventoryHandler";
+import InventoryBarChart from "./InventoryBarChart";
+import InventoryCard from "./InventoryCard";
 
 const InventorySystem = () => {
-  const [inventoryLevel, setInventoryLevel] = useState(5);
-  const [ leadTime, setLeadTime ] = useState(0);
-  // const [ orderProcessing, setOrderProcessing ] = useState(false);
-  // const [ toOrder, setToOrder ] = useState(0);
-  console.log(leadTime);
+  const [inventoryLevel, setInventoryLevel] = useState(3);
+  const [leadTime, setLeadTime] = useState(2);
+
+  const [day, setDay] = useState(1);
+
+  // const [ orderQuantity, setOrderQuantity ] = useState(0);
+  // console.log("order-quantity = ",orderQuantity);
+
+  console.log("day = ", day);
+
+  console.log("leadtime = ", leadTime);
+
   const [shortage, setShortage] = useState(0);
   const [inventoryData, setInventoryData] = useState([]);
 
   useEffect(() => {
-  const dayInterval =  setInterval(() => {
-    const demand = generateRandomDemand()
-    
-    let newInventoryLevel = inventoryLevel - demand;
-    // let order = 0;
+    const dayInterval = setInterval(() => {
 
-    if(newInventoryLevel < 3){
-      // setOrderProcessing(true);
-      // order = inventoryLevel <= 0 ? 12 : 12 - newInventoryLevel;
-      // setToOrder(newOrder);
-      if(leadTime == 3){
-        newInventoryLevel += 12;
-        // setOrderProcessing(false);
+      if(day > 15){
+        clearInterval(dayInterval);
+        return;
       }
-        setLeadTime( prev => prev + 1)
-    }
-    else{
-      setLeadTime(0);
-      // setOrderProcessing(false);
-      
-      // setToOrder(0);
-    }
-    setInventoryLevel(newInventoryLevel);
-    if(newInventoryLevel < 0){
-     let newShortage = (newInventoryLevel * -1);
-      setShortage(newShortage)
-    }
-    else{
-      setShortage(0)
-    }
+      const demand = generateRandomDemand();
 
-    const newInventoryData = {id: Date.now(), inventoryLevel, shortage, demand};
-    setInventoryData(prev => [...prev, newInventoryData])
+      let newInventoryLevel = inventoryLevel - demand;
 
-   }, 5000);
+      if(day < 5 && day == leadTime){
+        newInventoryLevel += 8;
+      }
 
-   return () => clearInterval(dayInterval)
-  }, [inventoryLevel, leadTime,shortage]);
+      if (day > 0 && day % 5 === 0) {
+        setLeadTime(day + generateRandomLeadTime());
 
-  return <div>
+        //  setOrderQuantity(newToOrder);
+
+        // if( newInventoryLevel < 0 ){
+        //   newToOrder = 11;
+        // }
+        // else{
+        //   newToOrder = 11 - newInventoryLevel;
+        // }
+      }
+
+      if (day > 5 && day === leadTime) {
+        console.log("hello i am there");
+
+        let newToOrder = newInventoryLevel < 0 ? 11 : 11 - newInventoryLevel;
+
+        newInventoryLevel += newToOrder;
+        console.log("new-to-order = ", newToOrder);
+      }
+
+      // if(newInventoryLevel < 3){
+
+      //   if(leadTime == 3){
+      //     newInventoryLevel += 12;
+
+      //   }
+      //     setLeadTime( prev => prev + 1)
+      // }
+      // else{
+      //   setLeadTime(0);
+      // }
+      setInventoryLevel(newInventoryLevel);
+      if (newInventoryLevel < 0) {
+        let newShortage = newInventoryLevel * -1;
+        setShortage(newShortage);
+      } else {
+        setShortage(0);
+      }
+
+      const newInventoryData = {
+        inventoryLevel,
+        shortage,
+        demand,
+        day,
+      };
+      setInventoryData((prev) => [...prev, newInventoryData]);
+      setDay((prev) => prev + 1);
+    }, 500);
+
+    return () => clearInterval(dayInterval);
+  }, [day, inventoryLevel, leadTime, shortage]);
+
+  return (
+   
+    <>
+
+    
+     <div className={`flex gap-3 m-10 mb-20 ${day > 15 ? "flex-row overflow-x-auto" : "flex-row-reverse justify-end"}`}>
+      {inventoryData.map((item) => (
+        <InventoryCard key={item.day} item={item} dataLength={inventoryData?.length}></InventoryCard>
+      ))}
+    </div>
+     
+   
     {
-      inventoryData.map( item => <div key={item.id} className="flex gap-5">
-        {/* <p>{item.id}</p> */}
-        <p>Inventory Level : {item.inventoryLevel}</p>
-        <p>Demand : {item.demand}</p>
-        {/* <p>To Order : { item.order} </p> */}
-        {/* <p>{item.shortage}</p> */}
-      </div>)
+      inventoryData.length > 0 && <InventoryBarChart inventoryData={inventoryData}></InventoryBarChart>
     }
-  </div>
+    
+   </>
+  );
 };
 
 export default InventorySystem;
