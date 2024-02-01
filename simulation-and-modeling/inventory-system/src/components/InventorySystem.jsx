@@ -7,17 +7,19 @@ import InventoryBarChart from "./InventoryBarChart";
 import InventoryCard from "./InventoryCard";
 
 const InventorySystem = () => {
+
+
   const [inventoryLevel, setInventoryLevel] = useState(3);
-  const [leadTime, setLeadTime] = useState(2);
-
   const [day, setDay] = useState(1);
-
-  // const [ orderQuantity, setOrderQuantity ] = useState(0);
-  // console.log("order-quantity = ",orderQuantity);
+  const [deliveryDate, setDeliveryDate] = useState(2);
+  const [ leadTime, setLeadTime ] = useState(2);
+  const [ orderQuantity, setOrderQuantity] = useState(8);
+  
 
   console.log("day = ", day);
 
-  console.log("leadtime = ", leadTime);
+  console.log("delivery-date = ", deliveryDate);
+  
 
   const [shortage, setShortage] = useState(0);
   const [inventoryData, setInventoryData] = useState([]);
@@ -29,48 +31,45 @@ const InventorySystem = () => {
         clearInterval(dayInterval);
         return;
       }
+
+      
       const demand = generateRandomDemand();
+     
 
       let newInventoryLevel = inventoryLevel - demand;
 
-      if(day < 5 && day == leadTime){
+      let isOrderDelivered = (day === deliveryDate);
+      if(isOrderDelivered){
+        console.log('got it');
+      }
+
+      if(day < 5 && isOrderDelivered){
         newInventoryLevel += 8;
       }
 
       if (day > 0 && day % 5 === 0) {
-        setLeadTime(day + generateRandomLeadTime());
+        
+        const newLeadTime = generateRandomLeadTime();
+        setLeadTime(newLeadTime);
+        setDeliveryDate(day + newLeadTime);
 
-        //  setOrderQuantity(newToOrder);
-
-        // if( newInventoryLevel < 0 ){
-        //   newToOrder = 11;
-        // }
-        // else{
-        //   newToOrder = 11 - newInventoryLevel;
-        // }
-      }
-
-      if (day > 5 && day === leadTime) {
-        console.log("hello i am there");
 
         let newToOrder = newInventoryLevel < 0 ? 11 : 11 - newInventoryLevel;
-
-        newInventoryLevel += newToOrder;
         console.log("new-to-order = ", newToOrder);
+        setOrderQuantity(newToOrder);
       }
 
-      // if(newInventoryLevel < 3){
+      if (day >= 5 && isOrderDelivered) {
 
-      //   if(leadTime == 3){
-      //     newInventoryLevel += 12;
+        console.log("hello i am there");
+        newInventoryLevel += orderQuantity;
+      }
+      // console.log({orderQuantity});
+      // console.log({day});
 
-      //   }
-      //     setLeadTime( prev => prev + 1)
-      // }
-      // else{
-      //   setLeadTime(0);
-      // }
+     
       setInventoryLevel(newInventoryLevel);
+
       if (newInventoryLevel < 0) {
         let newShortage = newInventoryLevel * -1;
         setShortage(newShortage);
@@ -83,13 +82,19 @@ const InventorySystem = () => {
         shortage,
         demand,
         day,
+        leadTime: day === 1 || day % 5 === 0 ? leadTime : 0,
+        orderQuantity: day === 1 || day % 5 === 0 ? orderQuantity : 0,
+        // orderCount: day === 1 || day % 5 === 0 ? ( Math.floor(day / 5) + 1 ) : 0,
+        orderCount: ( Math.floor(day / 5) + 1 ),
+        orderDelivered: day === deliveryDate + 1,
       };
       setInventoryData((prev) => [...prev, newInventoryData]);
       setDay((prev) => prev + 1);
+      
     }, 500);
 
     return () => clearInterval(dayInterval);
-  }, [day, inventoryLevel, leadTime, shortage]);
+  }, [day, inventoryLevel, deliveryDate, orderQuantity, shortage, leadTime]);
 
   return (
    
