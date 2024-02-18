@@ -2,7 +2,7 @@ import { Zoom } from "react-awesome-reveal";
 
 const InventoryCard = ({ item, dataLength, isSimulationEnd }) => {
   return (
-    <Zoom
+    <Zoom triggerOnce
       className={`flex text-sm rounded-2xl justify-center items-center  border-2 px-5 ${
         isSimulationEnd ? "py-3" : "py-1"
       } shadow flex-shrink-0 ${
@@ -37,10 +37,10 @@ const InventoryCard = ({ item, dataLength, isSimulationEnd }) => {
                       : ""
                   }`}
                 >
-                  Order {item.orderCount} is placed
+                 {item?.day === 1 ? "Initial" : "" } order {item?.day === 1 ? "" : item.orderCount} { item?.day === 1 ? "was" : "is" } placed
                 </p>
                 <p>Order Quantity : {item?.orderQuantity}</p>
-                <p>Lead-Time: {item?.leadTime}</p>
+                <p>Lead-Time: {item?.LeadTime}</p>
               </div>
             </div>
           </>

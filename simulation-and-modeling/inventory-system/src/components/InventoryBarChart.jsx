@@ -11,7 +11,7 @@ import {
   } from 'recharts';
 
 const InventoryBarChart = ({inventoryData, isSimulationEnd}) => {
-    console.log(inventoryData);
+    // console.log(inventoryData);
    
       return (
         <ResponsiveContainer  width="100%" height={ isSimulationEnd ? 500 : 300}>
@@ -23,7 +23,7 @@ const InventoryBarChart = ({inventoryData, isSimulationEnd}) => {
               top: 5,
               right: 30,
               left: 20,
-              bottom: 5,
+              bottom: 80,
             }}
             
           >
