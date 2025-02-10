@@ -94,7 +94,7 @@ const InventorySystem = () => {
       };
       setInventoryData((prev) => [...prev, newInventoryData]);
       setDay((prev) => prev + 1);
-    }, 1500);
+    }, 1000);
 
     return () => clearInterval(dayInterval);
   }, [day, inventoryLevel, deliveryDate, orderQuantity, shortage, leadTime]);
@@ -108,7 +108,7 @@ const InventorySystem = () => {
         className={`flex gap-3  pt-10 ${
           isSimulationEnd ? "mb-20 mx-28" : "mb-16 mx-14"
         } ${
-          day > 15 ? "flex-row overflow-x-auto" : "flex-row-reverse justify-end"
+          day >= 30 ? "flex-row overflow-x-auto" : "flex-row-reverse justify-end"
         }`}
       >
         {inventoryData.map((item) => (
